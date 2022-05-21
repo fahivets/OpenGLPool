@@ -14,6 +14,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "layers/LayerClearColor.h"
+#include "layers/LayerTexture2D.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -54,7 +55,6 @@ int main(void)
 
         Renderer renderer;
 
-        // IMGUI TEST
         // Setup IMGUI
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -63,22 +63,41 @@ int main(void)
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
-        Layer::LayerClearColor layerClearColor;
+
+        Layer::LayerBase* currentLayer = nullptr;
+        Layer::LayerMenu* layerMenu = new Layer::LayerMenu(currentLayer);
+        currentLayer = layerMenu;
+
+        layerMenu->RegisterLayer<Layer::LayerClearColor>("Clear Color");
+        layerMenu->RegisterLayer<Layer::LayerTexture2D>("Texture2D");
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
+            GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
             /* Render here */
             renderer.Clear();
-            layerClearColor.OnUpdate(0.0f);
-            layerClearColor.OnRender();
 
         	// IMGUI New Frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            layerClearColor.OnImGuiRender();
+            if (currentLayer)
+            {
+                currentLayer->OnUpdate(0.0f);
+                currentLayer->OnRender();
+                ImGui::Begin("Test");
+
+                if(currentLayer != layerMenu && ImGui::Button("<-"))
+                {
+                    delete currentLayer;
+                    currentLayer = layerMenu;
+                }
+
+                currentLayer->OnImGuiRender();
+                ImGui::End();
+            }
 
             // IMGUI Render
             ImGui::Render();
@@ -90,7 +109,15 @@ int main(void)
             /* Poll for and process events */
             glfwPollEvents();
         }
+
+        // TODO: remove that kostyl' later
+        if (currentLayer != layerMenu)
+        {
+            delete layerMenu;
+        }
+        delete currentLayer;
     }
+
     // IMGUI Shutdown
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

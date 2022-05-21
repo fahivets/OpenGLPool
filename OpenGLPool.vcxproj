@@ -446,6 +446,7 @@
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\layers\LayerBase.h" />
     <ClInclude Include="src\layers\LayerClearColor.h" />
+    <ClInclude Include="src\layers\LayerTexture2D.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\stb_image\stb_image.h" />
@@ -605,7 +606,9 @@
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
+    <ClCompile Include="src\layers\LayerBase.cpp" />
     <ClCompile Include="src\layers\LayerClearColor.cpp" />
+    <ClCompile Include="src\layers\LayerTexture2D.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image\stb_image.cpp" />
